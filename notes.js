@@ -62,6 +62,17 @@ async function openNote(id, title)
 
         currentNote = note;
 
+
+		document.getElementById(
+			'modalTitleEditor'
+		).value =
+			note.title;
+
+		document.getElementById(
+			'modalCategoryEditor'
+		).value =
+			note.category;
+
         document.getElementById(
             'modalTitle'
         ).textContent =
@@ -155,6 +166,14 @@ function showEditor()
     document.getElementById(
         'modalEditor'
     ).style.display = 'block';
+
+    document.getElementById(
+        'modalTitleEditor'
+    ).style.display = 'block';
+
+    document.getElementById(
+        'modalCategoryEditor'
+    ).style.display = 'block';
 }
 
 function showPreview()
@@ -165,6 +184,14 @@ function showPreview()
 
     document.getElementById(
         'modalEditor'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'modalTitleEditor'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'modalCategoryEditor'
     ).style.display = 'none';
 }
 
@@ -269,15 +296,21 @@ async function saveCurrentNote()
         currentNote.id
     );
 
-    formData.append(
-        'title',
-        currentNote.title
-    );
+	formData.append(
+		'title',
+		document.getElementById(
+			'modalTitleEditor'
+		).value
+	);
 
-    formData.append(
-        'category',
-        currentNote.category
-    );
+
+	formData.append(
+		'category',
+		document.getElementById(
+			'modalCategoryEditor'
+		).value
+	);
+
 
     formData.append(
         'content',
@@ -333,3 +366,51 @@ window.onclick = function(event)
         closeNewNoteModal();
     }
 };
+
+
+async function deleteCurrentNote()
+{
+    if (!currentNote) {
+        return;
+    }
+
+    if (
+        !confirm(
+            'Delete this note?'
+        )
+    ) {
+        return;
+    }
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        'id',
+        currentNote.id
+    );
+
+    const response =
+        await fetch(
+            'delete_note.php',
+            {
+                method: 'POST',
+                body: formData
+            }
+        );
+
+    const result =
+        await response.json();
+
+    if (result.success)
+    {
+        closeModal();
+        location.reload();
+    }
+    else
+    {
+        alert(
+            'Failed to delete note'
+        );
+    }
+}

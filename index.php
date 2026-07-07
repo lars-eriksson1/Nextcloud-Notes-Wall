@@ -151,48 +151,140 @@ usort($notes, function ($a, $b) {
                     <div class="note-category">
                         <?php echo htmlspecialchars($note['category']); ?>
                     </div>
-                    <div class="preview">
-                        <?php echo htmlspecialchars($note['preview']); ?>
-                    </div>
+                    <div class="preview"><?php echo htmlspecialchars($note['preview']); ?></div>
                 </div>
             </div>
             <?php endforeach; ?>
         </div>
     </div>
 </div>
-<h2 id="modalTitle"></h2>
-<div id="modalInfo"></div>
-<hr>
 
-<div id="modalBody"></div>
 
-<textarea
-    id="modalEditor"
-    style="
-        display:none;
-        width:100%;
-        min-height:400px;
-        resize:vertical;
-    ">
-</textarea>
-<br>
+<div id="noteModal" class="modal">
 
-<button onclick="showPreview()">
-    Preview
-</button>
+    <div class="modal-content">
 
-<button onclick="showEditor()">
-    Edit
-</button>
+        <span
+            class="close-modal"
+            onclick="closeModal()">
+            ×
+        </span>
 
-<button onclick="saveCurrentNote()">
-    Save
-</button>
-<button
-    id="modalEditButton"
-    onclick="openInNextcloud()">
-    Edit in Nextcloud
-</button>
+
+        <h2 id="modalTitle"></h2>
+
+        <div id="modalInfo"></div>
+
+        <hr>
+
+		<label>Title</label>
+
+		<input
+			id="modalTitleEditor"
+			style="
+				width:100%;
+				margin-bottom:10px;
+				display:none;
+			">
+		<label>Category</label>
+
+		<input
+			id="modalCategoryEditor"
+			style="
+				width:100%;
+				margin-bottom:10px;
+				display:none;
+			">
+        <div id="modalBody"></div>
+
+        <textarea
+            id="modalEditor"
+            style="
+                display:none;
+                width:100%;
+                min-height:400px;
+                resize:vertical;
+            ">
+        </textarea>
+
+        <br>
+
+        <button onclick="showEditor()">
+            Edit
+        </button>
+
+        <button onclick="saveCurrentNote()">
+            Save
+        </button>
+
+		<button
+			onclick="deleteCurrentNote()"
+			style="
+				background:#c62828;
+				color:white;
+			">
+
+			Delete
+
+		</button>
+
+        <button
+            id="modalEditButton"
+            onclick="openInNextcloud()">
+
+            Edit in Nextcloud
+
+        </button>
+
+    </div>
+
+</div>
+
+<div id="newNoteModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+            class="close-modal"
+            onclick="closeNewNoteModal()">
+            ×
+        </span>
+
+        <h2>New Note</h2>
+
+        <label>Title</label>
+
+        <input
+            id="newNoteTitle"
+            style="width:100%;margin-bottom:15px;">
+
+        <label>Category</label>
+
+        <input
+            id="newNoteCategory"
+            value="Unsorted"
+            style="width:100%;margin-bottom:15px;">
+
+        <label>Content</label>
+
+        <textarea
+            id="newNoteContent"
+            rows="12"
+            style="width:100%;">
+        </textarea>
+
+        <br><br>
+
+        <button onclick="saveNewNote()">
+            Save Note
+        </button>
+
+    </div>
+
+</div>
+
 <script src="notes.js?v=1"></script>
+
 </body>
 </html>
+
