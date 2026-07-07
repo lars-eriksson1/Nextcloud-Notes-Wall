@@ -2,7 +2,9 @@
 require_once 'config.php';
 require_once 'includes/api.php';
 
-$selectedCategory = $_GET['category'] ?? '';
+$selectedCategory =
+    $_GET['category']
+    ?? 'Uncategorized';
 $apiNotes = getNotes();
 
 $categoryCounts = [];
@@ -11,7 +13,7 @@ $notes = [];
 foreach ($apiNotes as $note) {
     $category = trim($note['category'] ?? '');
     if ($category === '') {
-        $category = 'Unsorted';
+        $category = 'Uncategorized';
     }
     if (!isset($categoryCounts[$category])) {
         $categoryCounts[$category] = 0;
@@ -23,14 +25,15 @@ ksort($categoryCounts);
 foreach ($apiNotes as $note) {
     $category = trim($note['category'] ?? '');
     if ($category === '') {
-        $category = 'Unsorted';
+        $category = 'Uncategorized';
     }
-    if (
-        $selectedCategory !== ''
-        && $selectedCategory !== $category
-    ) {
-        continue;
-    }
+	if (
+		$selectedCategory !== 'all'
+		&& $selectedCategory !== $category
+	) {
+		continue;
+	}
+	
     $content = $note['content'] ?? '';
     $preview = preg_replace(
         '/!\[.*?\]\(.*?\)/',
@@ -77,16 +80,35 @@ usort($notes, function ($a, $b) {
     onclick="openNewNoteModal();">
     ➕ Add Note
 </button>
-        <div
-            class="category <?php echo ($selectedCategory === '') ? 'active' : ''; ?>"
-            onclick="window.location='index.php';"
-            style="cursor:pointer;">
+
+		<div
+			class="category <?php echo ($selectedCategory === 'Uncategorized') ? 'active' : ''; ?>"
+			onclick="window.location='index.php?category=Uncategorized';"
+			style="cursor:pointer;">
+
+			📌 Active Notes
+
+			<span class="count">
+				<?php echo $categoryCounts['Uncategorized'] ?? 0; ?>
+			</span>
+
+		</div>
+
+		<div
+			class="category <?php echo ($selectedCategory === 'all') ? 'active' : ''; ?>"
+			onclick="window.location='index.php?category=all';"
+			style="cursor:pointer;">
             All Notes
             <span class="count">
                 <?php echo count($apiNotes); ?>
             </span>
         </div>
         <?php foreach ($categoryCounts as $category => $count): ?>
+		<?php
+		if ($category === 'Uncategorized') {
+			continue;
+		}
+		?>
         <div
             class="category <?php echo ($selectedCategory === $category) ? 'active' : ''; ?>"
             onclick="window.location='index.php?category=<?php echo urlencode($category); ?>';"
@@ -209,13 +231,20 @@ usort($notes, function ($a, $b) {
 
         <br>
 
-        <button onclick="showEditor()">
-            Edit
-        </button>
 
-        <button onclick="saveCurrentNote()">
-            Save
-        </button>
+		<button
+			id="editButton"
+			onclick="showEditor()">
+			Edit
+		</button>
+
+		<button
+			id="saveButton"
+			onclick="saveCurrentNote()"
+			style="display:none;">
+			Save
+		</button>
+
 
 		<button
 			onclick="deleteCurrentNote()"
@@ -262,7 +291,7 @@ usort($notes, function ($a, $b) {
 
         <input
             id="newNoteCategory"
-            value="Unsorted"
+            value=""
             style="width:100%;margin-bottom:15px;">
 
         <label>Content</label>

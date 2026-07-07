@@ -174,6 +174,19 @@ function showEditor()
     document.getElementById(
         'modalCategoryEditor'
     ).style.display = 'block';
+
+	document.getElementById(
+		'saveButton'
+	).style.display = 'inline-block';
+
+	document.getElementById(
+		'editButton'
+	).textContent = 'Cancel';
+
+	document.getElementById(
+		'editButton'
+	).onclick = showPreview;
+
 }
 
 function showPreview()
@@ -193,6 +206,18 @@ function showPreview()
     document.getElementById(
         'modalCategoryEditor'
     ).style.display = 'none';
+
+	document.getElementById(
+		'saveButton'
+	).style.display = 'none';
+
+	document.getElementById(
+		'editButton'
+	).textContent = 'Edit';
+
+	document.getElementById(
+		'editButton'
+	).onclick = showEditor;
 }
 
 function openNewNoteModal()
